@@ -25,14 +25,11 @@ apk add --no-cache \
   jq
 
 # Download cloudflared release
+getCloudflaredLatest=$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r .tag_name )
+CLOUDFLARED_VERSION=${CLOUDFLARED_VERSION:-${getCloudflaredLatest}}
 curl \
   --location https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-${CLOUDFLARED_ARCH} \
   --output /usr/local/bin/cloudflared
-
-if [[ "$( sha256sum /usr/local/bin/cloudflared | awk '{ print $1 }' )" != "${CLOUDFLARED_CHECKSUM}" ]]; then
-  echo "Checksum doesn't match expected value."
-  exit 1
-fi
 
 # Set executable permissions
 chmod +x /usr/local/bin/cloudflared
