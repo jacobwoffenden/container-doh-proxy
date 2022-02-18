@@ -46,6 +46,17 @@ docker run \
   ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
 
+#### NextDNS
+
+```
+docker run \
+  --env PROVIDER="nextdns" \
+  --env NEXTDNS_ID="abc123"
+  --name doh-proxy \
+  --publish 53:53/udp \
+  ghcr.io/jacobwoffenden/doh-proxy:latest
+```
+
 ### Entrypoint Overrides
 
 |Variable|Default|

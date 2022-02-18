@@ -9,6 +9,8 @@ MAX_UPSTREAM_CONNS="${MAX_UPSTREAM_CONNS:-0}"
 
 if [[ "${PROVIDER}" == "cloudflare-zero-trust" ]]; then
   UPSTREAM="https://${CLOUDFLARE_ZERO_TRUST_ID}.cloudflare-gateway.com/dns-query"
+elif [[ "${PROVIDER}" == "nextdns" ]]; then
+  UPSTREAM="https://dns.nextdns.io/${NEXTDNS_ID}"
 else
   UPSTREAM=$( jq -r ".\"${PROVIDER}\"" /etc/doh-proxy/providers.json )
 fi
