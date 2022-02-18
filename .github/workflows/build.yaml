@@ -49,6 +49,11 @@ jobs:
             BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
             BUILD_REVISION=${{ steps.prepare_build_args.outputs.build_revision }}
 
+      - name: Test cloudflared
+        id: test_cloudflared
+        run: |
+          docker run --rm --entrypoint /usr/local/bin/cloudflared doh-proxy:latest version
+
       - name: Scan Container
         id: scan
         uses: anchore/scan-action@v3
