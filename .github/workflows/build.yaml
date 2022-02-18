@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [ amd64, arm64 ]
+        platform: [ "amd64", "arm64", "386", "arm/v7", arm/v6 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -43,17 +43,22 @@ jobs:
           platforms: linux/${{ matrix.platform }}
           load: true
           tags: |
-            doh-proxy:latest-${{ matrix.platform }}
+            doh-proxy:latest
           build-args: |
             BUILD_CREATED=${{ steps.prepare_build_args.outputs.build_created }}
             BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
             BUILD_REVISION=${{ steps.prepare_build_args.outputs.build_revision }}
 
+      - name: Test cloudflared
+        id: test_cloudflared
+        run: |
+          docker run --rm --entrypoint /usr/local/bin/cloudflared doh-proxy:latest version
+
       - name: Scan Container
         id: scan
         uses: anchore/scan-action@v3
         with:
-          image: doh-proxy:latest-${{ matrix.platform }}
+          image: doh-proxy:latest
           fail-build: true
           severity-cutoff: critical
           acs-report-enable: true

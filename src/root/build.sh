@@ -6,10 +6,12 @@ SYSTEM_ARCH=$( uname -m )
 # Set CLOUDFLARED_ARCH and CLOUDFLARED_CHECKSUM
 if [[ "${SYSTEM_ARCH}" == "aarch64" ]]; then
   CLOUDFLARED_ARCH="arm64"
-  CLOUDFLARED_CHECKSUM="${CLOUDFLARED_CHECKSUM_ARM64}"
 elif [[ "${SYSTEM_ARCH}" == "x86_64" ]]; then
   CLOUDFLARED_ARCH="amd64"
-  CLOUDFLARED_CHECKSUM="${CLOUDFLARED_CHECKSUM_AMD64}"
+elif [[ "${SYSTEM_ARCH}" == "i686" ]]; then
+  CLOUDFLARED_ARCH="386"
+elif [[ "${SYSTEM_ARCH}" == "armv7l" ]]; then
+  CLOUDFLARED_ARCH="arm"
 else
   echo "${SYSTEM_ARCH} not supported yet."
   exit 1
