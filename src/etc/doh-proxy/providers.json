@@ -13,6 +13,5 @@
   "cleanbrowsing-security": "https://doh.cleanbrowsing.org/doh/security-filter/",
   "google": "https://dns.google/dns-query",
   "hurricane-electric": "https://ordns.he.net/dns-query",
-  "powerdns": "https://doh.powerdns.org",
   "quad9": "https://dns.quad9.net/dns-query"
 }
