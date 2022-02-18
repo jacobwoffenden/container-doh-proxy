@@ -21,7 +21,17 @@ docker run \
   ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
 
-#### Alternative
+#### With Metrics Exposed (http://<address>:9100/metrics)
+
+```
+docker run \
+  --name doh-proxy \
+  --publish 53:53/udp \
+  --publish 9100:9100/tcp \
+  ghcr.io/jacobwoffenden/doh-proxy:latest
+```
+
+#### Alternative Providers
 
 See [providers.json](src/etc/doh-proxy/providers.json) for a list of providers
 
@@ -40,7 +50,7 @@ If your Cloudflare Zero Trust URL is `https://abcdefghij.cloudflare-gateway.com/
 ```
 docker run \
   --env PROVIDER="cloudflare-zero-trust" \
-  --env CLOUDFLARE_ZERO_TRUST_ID="abcdefghij"
+  --env CLOUDFLARE_ZERO_TRUST_ID="abcdefghij" \
   --name doh-proxy \
   --publish 53:53/udp \
   ghcr.io/jacobwoffenden/doh-proxy:latest
@@ -48,10 +58,12 @@ docker run \
 
 #### NextDNS
 
+if your NextDNS URL is `https://dns.nextdns.io/abc123`, the `NEXTDNS_ID` is `abc123`
+
 ```
 docker run \
   --env PROVIDER="nextdns" \
-  --env NEXTDNS_ID="abc123"
+  --env NEXTDNS_ID="abc123" \
   --name doh-proxy \
   --publish 53:53/udp \
   ghcr.io/jacobwoffenden/doh-proxy:latest
