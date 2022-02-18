@@ -1,0 +1,35 @@
+---
+name: "Run Tests"
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Lint Containerfile
+        uses: hadolint/hadolint-action@v1.6.0
+        with:
+          dockerfile: Containerfile
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Provider Tests
+        id: test
+        run: |
+          bash -x scripts/provider-test.sh
+        
+

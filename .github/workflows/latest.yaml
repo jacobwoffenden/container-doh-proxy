@@ -1,0 +1,107 @@
+---
+name: "Push Latest"
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  ORAS_VERSION: '0.12.0'
+
+jobs:
+  build-push-latest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare Build Arguments
+        id: prepare_build_args
+        run: |
+          echo ::set-output name=build_created::$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )
+          echo ::set-output name=build_version::$( echo "latest" )
+          echo ::set-output name=build_revision::$( echo "${{ github.sha }}" )
+
+      - name: Install ORAS
+        id: install_oras
+        run: |
+          curl -LO https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_amd64.tar.gz
+          tar -zxvf oras_${ORAS_VERSION}_linux_amd64.tar.gz
+          rm -f oras_${ORAS_VERSION}_linux_amd64.tar.gz
+
+      - name: Install Cosign
+        id: install_cosign
+        uses: sigstore/cosign-installer@main
+
+      - name: Set up QEMU
+        id: setup_qemu
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        id: setup_buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        id: docker_hub_login
+        uses: docker/login-action@v1
+        with:
+          username: jacobwoffenden
+          password: ${{ secrets.DOCKER_HUB_PAT }}
+
+      - name: Login to GitHub Container Registry
+        id: ghcr_login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry (ORAS)
+        id: oras_ghcr_login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io --username ${{ github.actor }} --password-stdin
+
+      - name: Publish Artifact Hub Manifest
+        id: publish_ah_manifest
+        run: |
+          oras push \
+            ghcr.io/jacobwoffenden/doh-proxy:artifacthub.io \
+            --manifest-config /dev/null:application/vnd.cncf.artifacthub.config.v1+yaml \
+            artifacthub-repo.yml:application/vnd.cncf.artifacthub.repository-metadata.layer.v1.yaml
+
+      - name: Build and Publish Containers to Registries
+        id: build_publish
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Containerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+            ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          build-args: |
+            BUILD_CREATED=${{ steps.prepare_build_args.outputs.build_created }}
+            BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
+            BUILD_REVISION=${{ steps.prepare_build_args.outputs.build_revision }}
+
+      - name: Sign Containers
+        id: sign_containers
+        run: |
+          cosign sign --recursive docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+        env:
+          COSIGN_EXPERIMENTAL: 1
+          
+      - name: Verify Containers
+        id: verify_containers
+        run: |
+          cosign verify docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+        env:
+          COSIGN_EXPERIMENTAL: 1

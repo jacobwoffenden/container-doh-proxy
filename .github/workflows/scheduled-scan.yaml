@@ -1,0 +1,27 @@
+---
+name: "Scheduled Image Scan"
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Scan Container
+        id: scan
+        uses: anchore/scan-action@v3
+        with:
+          image: ghcr.io/jacobwoffenden/doh-proxy:latest
+          fail-build: false
+          acs-report-enable: true
+
+      - name: Upload Anchore scan SARIF report
+        id: upload_serif_report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}

@@ -1,0 +1,21 @@
+---
+version: '3.9'
+
+services:
+  doh-proxy:
+    image: ghcr.io/jacobwoffenden/doh-proxy:latest
+    environment:
+      # Uncomment one of the below providers
+      # - PROVIDER=cloudflare-family
+      # - PROVIDER=cloudflare-security
+      # - PROVIDER=adguard
+      # - PROVIDER=adguard-family
+      # - PROVIDER=cisco
+      # - PROVIDER=cisco-familyshield
+      # - PROVIDER=cleanbrowsing-family
+      # - PROVIDER=cleanbrowsing-adult
+      # - PROVIDER=cleanbrowsing-security
+      # - PROVIDER=google
+      # - PROVIDER=quad9
+    ports:
+      - '5053:5053/udp'
