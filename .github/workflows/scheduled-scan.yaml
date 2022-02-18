@@ -3,7 +3,7 @@ name: "Scheduled Image Scan"
 
 on:
   schedule:
-    - cron: '0 9 * * 1'
+    - cron: '0 12 * * 1'
 
 jobs:
   scan:
