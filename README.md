@@ -23,7 +23,7 @@ docker run \
 
 #### Alternative
 
-See `src/etc/doh-proxy/providers.json` for a list of providers
+See [providers.json](src/etc/doh-proxy/providers.json) for a list of providers
 
 ```
 docker run \
