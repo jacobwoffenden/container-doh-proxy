@@ -5,4 +5,4 @@ services:
   doh-proxy:
     image: ghcr.io/jacobwoffenden/doh-proxy:latest
     ports:
-      - '5053:5053/udp'
+      - '53:53/udp'

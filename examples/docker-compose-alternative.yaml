@@ -18,4 +18,4 @@ services:
       # - PROVIDER=google
       # - PROVIDER=quad9
     ports:
-      - '5053:5053/udp'
+      - '53:53/udp'

@@ -17,7 +17,7 @@ COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
 docker run \
   --name doh-proxy \
-  --publish 5053:5053/udp \
+  --publish 53:53/udp \
   ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
 
@@ -29,7 +29,7 @@ See `src/etc/doh-proxy/providers.json` for a list of providers
 docker run \
   --env PROVIDER="cloudflare-family" \
   --name doh-proxy \
-  --publish 5053:5053/udp \
+  --publish 53:53/udp \
   ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
 
@@ -42,7 +42,7 @@ docker run \
   --env PROVIDER="cloudflare-zero-trust" \
   --env CLOUDFLARE_ZERO_TRUST_ID="abcdefghij"
   --name doh-proxy \
-  --publish 5053:5053/udp \
+  --publish 53:53/udp \
   ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
 
@@ -52,7 +52,7 @@ docker run \
 |:----------------:|:---------:|
 |`PROVIDER`|`cloudflare`|
 |`LISTEN_ADDRESS`|`0.0.0.0`|
-|`LISTEN_PORT`|`5053`|
+|`LISTEN_PORT`|`53`|
 |`METRICS_ADDRESS`|`0.0.0.0`|
 |`METRICS_PORT`|`9100`|
 |`MAX_UPSTREAM_CONNS`|`0`|

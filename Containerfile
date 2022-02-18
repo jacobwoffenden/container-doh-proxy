@@ -31,7 +31,7 @@ USER doh-proxy
 
 HEALTHCHECK --interval=5s --timeout=5s --start-period=5s CMD [ "/usr/local/bin/healthcheck.sh" ]
 
-EXPOSE 5053/udp
+EXPOSE 53/udp
 EXPOSE 9100/tcp
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]

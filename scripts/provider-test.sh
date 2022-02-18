@@ -11,7 +11,7 @@ for provider in $( jq -r 'keys[]' src/etc/doh-proxy/providers.json ); do
   sleep 2
 
   echo "---> Sending Test Request"
-  sendTest=$( docker exec ${provider} dig +time=2 +tries=1 @127.0.0.1 -p 5053 cloudflarestatus.com +short || echo "TEST_FAILED" )
+  sendTest=$( docker exec ${provider} dig +time=2 +tries=1 @127.0.0.1 -p 53 cloudflarestatus.com +short || echo "TEST_FAILED" )
   if [[ "${sendTest}" == *"TEST_FAILED"* ]]; then
     echo "---> Test Failed"
     dockerRm=$( docker rm --force ${provider} )

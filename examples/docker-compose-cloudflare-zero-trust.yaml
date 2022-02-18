@@ -9,4 +9,4 @@ services:
       # e.g. if your Cloudflare Zero Trust URL is https://abcdefghij.cloudflare-gateway.com/dns-query, the CLOUDFLARE_ZERO_TRUST_ID is abcdefghij
       - CLOUDFLARE_ZERO_TRUST_ID=replace-me
     ports:
-      - '5053:5053/udp'
+      - '53:53/udp'
