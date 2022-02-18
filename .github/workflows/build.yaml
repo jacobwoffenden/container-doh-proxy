@@ -43,7 +43,7 @@ jobs:
           platforms: linux/${{ matrix.platform }}
           load: true
           tags: |
-            doh-proxy:latest-${{ matrix.platform }}
+            doh-proxy:latest
           build-args: |
             BUILD_CREATED=${{ steps.prepare_build_args.outputs.build_created }}
             BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
@@ -53,7 +53,7 @@ jobs:
         id: scan
         uses: anchore/scan-action@v3
         with:
-          image: doh-proxy:latest-${{ matrix.platform }}
+          image: doh-proxy:latest
           fail-build: true
           severity-cutoff: critical
           acs-report-enable: true
