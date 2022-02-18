@@ -30,7 +30,7 @@ jobs:
       - name: Run Provider Tests
         id: test
         run: |
-          apt install --yes dnsutils
+          sudo apt install --yes dnsutils
           bash -x scripts/provider-test.sh
         env:
           CLOUDFLARE_ZERO_TRUST_ID: ${{ secrets.CLOUDFLARE_ZERO_TRUST_ID }}
