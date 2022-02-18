@@ -7,7 +7,7 @@ ARG CLOUDFLARED_VERSION="2022.2.0"
 ARG CLOUDFLARED_CHECKSUM_AMD64="2becd546616fda7adf8c3153306b58067751e09a3b5f8223bcd6c9b21e57c43a"
 ARG CLOUDFLARED_CHECKSUM_ARM64="e1e358d393cf2cb89a45e0fcdb32f0c6668827c2de874ac9930bab116c2fc52c"
 
-LABEL io.woffenden.app.doh-proxy.version="${CLOUDFLARED_VERSION}"
+LABEL com.cloudflare.cloudflared.version="${CLOUDFLARED_VERSION}"
 LABEL org.opencontainers.image.created="${BUILD_CREATED}"
 LABEL org.opencontainers.image.version="${BUILD_VERSION}" 
 LABEL org.opencontainers.image.revision="${BUILD_REVISION}"
