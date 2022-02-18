@@ -1,0 +1,14 @@
+{
+  "cloudflare": "https://cloudflare-dns.com/dns-query",
+  "cloudflare-family": "https://family.cloudflare-dns.com/dns-query",
+  "cloudflare-security": "https://security.cloudflare-dns.com/dns-query",
+  "adguard": "https://dns.adguard.com/dns-query",
+  "adguard-family": "https://dns-family.adguard.com/dns-query",
+  "cisco": "https://doh.opendns.com/dns-query",
+  "cisco-family": "https://doh.familyshield.opendns.com/dns-query",
+  "cleanbrowsing-family": "https://doh.cleanbrowsing.org/doh/family-filter/",
+  "cleanbrowsing-adult": "https://doh.cleanbrowsing.org/doh/adult-filter/",
+  "cleanbrowsing-security": "https://doh.cleanbrowsing.org/doh/security-filter/",
+  "google": "https://dns.google/dns-query",
+  "quad9": "https://dns.quad9.net/dns-query"
+}
