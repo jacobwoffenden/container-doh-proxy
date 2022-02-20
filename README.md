@@ -10,7 +10,7 @@
 ### `cosign` Verification (Optional)
 
 ```
-COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/jacobwoffenden/doh-proxy:latest
+COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/jacobwoffenden/doh-proxy:latest | jq
 ```
 
 ### Running
