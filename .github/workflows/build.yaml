@@ -39,7 +39,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Containerfile
           platforms: linux/${{ matrix.platform }}
           load: true
           tags: |
