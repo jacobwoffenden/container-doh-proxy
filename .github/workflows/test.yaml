@@ -16,10 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Lint Containerfile
+      - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v1.6.0
-        with:
-          dockerfile: Containerfile
+        id: hadolint
 
   test-providers:
     runs-on: ubuntu-latest
