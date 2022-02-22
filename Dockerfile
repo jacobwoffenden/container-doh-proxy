@@ -18,7 +18,7 @@ LABEL org.opencontainers.image.documentation="https://github.com/jacobwoffenden/
 LABEL org.opencontainers.image.authors="Jacob Woffenden (jacob@woffenden.io)"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL io.artifacthub.package.readme-url="https://raw.githubusercontent.com/jacobwoffenden/container-doh-proxy/main/README.md"
-LABEL io.artifacthub.package.alternative-locations="docker.io/jacobwoffenden/doh-proxy"
+LABEL io.artifacthub.package.alternative-locations="docker.io/jacobwoffenden/doh-proxy,quay.io/jacobwoffenden/doh-proxy"
 
 COPY src/root/build.sh /root/build.sh
 COPY src/usr/local/bin/entrypoint.sh /usr/local/bin/entrypoint.sh
