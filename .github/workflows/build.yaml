@@ -74,6 +74,7 @@ jobs:
         uses: snyk/actions/docker@0.3.0
         with:
           image: doh-proxy:latest
+          args: --file=Dockerfile
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
