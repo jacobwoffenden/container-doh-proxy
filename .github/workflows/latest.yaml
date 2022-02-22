@@ -53,7 +53,7 @@ jobs:
         id: docker_hub_login
         uses: docker/login-action@v1
         with:
-          username: jacobwoffenden
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PAT }}
 
       - name: Login to GitHub Container Registry
@@ -63,6 +63,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Red Hat Quay
+        id: quay_login
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_IO_ROBOT_USERNAME }}
+          password: ${{ secrets.QUAY_IO_ROBOT_PASSWORD }}
 
       - name: Login to GitHub Container Registry (ORAS)
         id: oras_ghcr_login
@@ -87,6 +95,7 @@ jobs:
           tags: |
             docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
             ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+            quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           build-args: |
             BUILD_CREATED=${{ steps.prepare_build_args.outputs.build_created }}
             BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
@@ -98,6 +107,7 @@ jobs:
         run: |
           cosign sign --recursive docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          cosign sign --recursive quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
         env:
           COSIGN_EXPERIMENTAL: 1
           
@@ -106,5 +116,6 @@ jobs:
         run: |
           cosign verify docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          cosign verify quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
         env:
           COSIGN_EXPERIMENTAL: 1
