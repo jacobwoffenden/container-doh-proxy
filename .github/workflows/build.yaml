@@ -66,7 +66,7 @@ jobs:
         id: upload_anchore_scan_serif_report
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: ${{ steps.scan.anchore_scan.sarif }}
+          sarif_file: results.sarif
 
       - name: Snyk Scan
         id: snyk_scan
