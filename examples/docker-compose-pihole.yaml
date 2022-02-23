@@ -1,0 +1,39 @@
+---
+version: '3.9'
+
+networks:
+  pihole:
+    name: pihole
+    ipam:
+      config:
+        - subnet: 192.168.200.0/24
+          gateway: 192.168.200.1
+
+services:
+  doh-proxy:
+    image: ghcr.io/jacobwoffenden/doh-proxy:latest
+    container_name: doh-proxy
+    environment:
+      - LISTEN_PORT=5053
+    networks:
+      pihole:
+        ipv4_address: 192.168.200.2
+    restart: unless-stopped
+
+  pihole:
+    image: docker.io/pihole/pihole:latest
+    container_name: pihole
+    environment:
+      TZ: 'Europe/London'
+      WEBPASSWORD: 'supersecretadminpassword'
+      PIHOLE_DNS_: '192.168.200.2#5053'
+    depends_on:
+      - doh-proxy
+    networks:
+      pihole:
+        ipv4_address: 192.168.200.3
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    restart: unless-stopped
