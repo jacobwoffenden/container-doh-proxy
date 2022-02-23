@@ -8,9 +8,6 @@ on:
   schedule:
     - cron: '0 9 * * 1'
 
-env:
-  ORAS_VERSION: '0.12.0'
-
 jobs:
   build-push-latest:
     runs-on: ubuntu-latest
@@ -28,14 +25,15 @@ jobs:
           echo ::set-output name=build_created::$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )
           echo ::set-output name=build_version::$( echo "latest" )
           echo ::set-output name=build_revision::$( echo "${{ github.sha }}" )
-          echo ::set-output name=cloudflared_version::$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r .tag_name )
+          echo ::set-output name=cloudflared_version::$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name' )
 
       - name: Install ORAS
         id: install_oras
         run: |
-          curl -LO https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_amd64.tar.gz
-          tar -zxvf oras_${ORAS_VERSION}_linux_amd64.tar.gz
-          rm -f oras_${ORAS_VERSION}_linux_amd64.tar.gz
+          orasVersion=$( curl --silent https://api.github.com/repos/oras-project/oras/releases/latest | jq -r '.tag_name' | sed 's/v//' )
+          curl -LO https://github.com/oras-project/oras/releases/download/v${orasVersion}/oras_${orasVersion}_linux_amd64.tar.gz
+          tar -zxvf oras_${orasVersion}_linux_amd64.tar.gz
+          rm -f oras_${orasVersion}_linux_amd64.tar.gz
 
       - name: Install Cosign
         id: install_cosign
@@ -96,6 +94,7 @@ jobs:
             docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
             ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
             quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+            ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}_cloudflared-${{ steps.prepare_build_args.outputs.cloudflared_version }}
           build-args: |
             BUILD_CREATED=${{ steps.prepare_build_args.outputs.build_created }}
             BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
@@ -108,6 +107,7 @@ jobs:
           cosign sign --recursive docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           cosign sign --recursive quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}_cloudflared-${{ steps.prepare_build_args.outputs.cloudflared_version }}
         env:
           COSIGN_EXPERIMENTAL: 1
           
@@ -117,5 +117,6 @@ jobs:
           cosign verify docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
           cosign verify quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
+          cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}_cloudflared-${{ steps.prepare_build_args.outputs.cloudflared_version }}
         env:
           COSIGN_EXPERIMENTAL: 1
