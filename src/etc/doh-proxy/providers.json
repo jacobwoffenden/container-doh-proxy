@@ -6,12 +6,18 @@
   "adguard-family": "https://dns-family.adguard.com/dns-query",
   "andrews-and-arnold": "https://dns.aa.net.uk/dns-query",
   "applied-privacy": "https://doh.applied-privacy.net/query",
+  "cira-shield-family": "https://family.canadianshield.cira.ca/dns-query",
+  "cira-shield-private": "https://private.canadianshield.cira.ca/dns-query",
+  "cira-shield-protected": "https://protected.canadianshield.cira.ca/dns-query",
   "cisco": "https://doh.opendns.com/dns-query",
   "cisco-family": "https://doh.familyshield.opendns.com/dns-query",
   "cleanbrowsing-family": "https://doh.cleanbrowsing.org/doh/family-filter/",
   "cleanbrowsing-adult": "https://doh.cleanbrowsing.org/doh/adult-filter/",
   "cleanbrowsing-security": "https://doh.cleanbrowsing.org/doh/security-filter/",
+  "dnsforge": "https://dnsforge.de/dns-query",
+  "dnspod": "https://dns.pub/dns-query",
   "google": "https://dns.google/dns-query",
   "hurricane-electric": "https://ordns.he.net/dns-query",
+  "libredns": "https://doh.libredns.gr/dns-query",
   "quad9": "https://dns.quad9.net/dns-query"
 }
