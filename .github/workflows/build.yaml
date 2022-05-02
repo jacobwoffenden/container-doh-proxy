@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload Anchore Scan SARIF report
         id: upload_anchore_scan_serif_report
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: results.sarif
 
@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload Snyk Scan SARIF report
         id: upload_snyk_scan_serif_report
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
 
@@ -91,6 +91,6 @@ jobs:
           output: trivy-results.sarif
 
       - name: Upload Trivy Scan SARIF report
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: trivy-results.sarif
