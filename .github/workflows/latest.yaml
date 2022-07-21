@@ -73,7 +73,7 @@ jobs:
       - name: Login to GitHub Container Registry (ORAS)
         id: oras_ghcr_login
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | oras login https://ghcr.io --username ${{ github.actor }} --password-stdin
+          echo ${{ secrets.GITHUB_TOKEN }} | oras login ghcr.io --username ${{ github.actor }} --password-stdin
 
       - name: Publish Artifact Hub Manifest
         id: publish_ah_manifest
