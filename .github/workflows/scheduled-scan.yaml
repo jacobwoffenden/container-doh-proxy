@@ -27,21 +27,21 @@ jobs:
         with:
           sarif_file: results.sarif
 
-      - name: Snyk Scan
-        id: snyk_scan
-        continue-on-error: true
-        uses: snyk/actions/docker@0.3.0
-        with:
-          image: ghcr.io/jacobwoffenden/doh-proxy:latest
-          args: --file=Dockerfile
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      # - name: Snyk Scan
+      #   id: snyk_scan
+      #   continue-on-error: true
+      #   uses: snyk/actions/docker@0.3.0
+      #   with:
+      #     image: ghcr.io/jacobwoffenden/doh-proxy:latest
+      #     args: --file=Dockerfile
+      #   env:
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: Upload Snyk Scan SARIF report
-        id: upload_snyk_scan_serif_report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
+      # - name: Upload Snyk Scan SARIF report
+      #   id: upload_snyk_scan_serif_report
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     sarif_file: snyk.sarif
 
       - name: Trivy Scan
         id: trivy_scan
