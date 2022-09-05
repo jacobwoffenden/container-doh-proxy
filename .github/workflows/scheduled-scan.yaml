@@ -12,47 +12,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Anchore Scan
-        id: anchore_scan
-        uses: anchore/scan-action@v3
-        with:
-          image: ghcr.io/jacobwoffenden/doh-proxy:latest
-          fail-build: false
-          severity-cutoff: critical
-          acs-report-enable: true
-
-      - name: Upload Anchore Scan SARIF report
-        id: upload_anchore_scan_serif_report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: results.sarif
-
-      # - name: Snyk Scan
-      #   id: snyk_scan
-      #   continue-on-error: true
-      #   uses: snyk/actions/docker@0.3.0
-      #   with:
-      #     image: ghcr.io/jacobwoffenden/doh-proxy:latest
-      #     args: --file=Dockerfile
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      # - name: Upload Snyk Scan SARIF report
-      #   id: upload_snyk_scan_serif_report
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     sarif_file: snyk.sarif
-
       - name: Trivy Scan
         id: trivy_scan
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.6.2
+        uses: aquasecurity/trivy-action@0.7.1
         with:
           image-ref: ghcr.io/jacobwoffenden/doh-proxy:latest
           format: sarif
           output: trivy-results.sarif
 
       - name: Upload Trivy Scan SARIF report
+        id: upload_trivy_sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: trivy-results.sarif

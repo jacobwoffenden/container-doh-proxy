@@ -51,7 +51,7 @@ jobs:
         id: docker_hub_login
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          username: jacobwoffenden
           password: ${{ secrets.DOCKER_HUB_PAT }}
 
       - name: Login to GitHub Container Registry
