@@ -3,10 +3,10 @@ schemaVersion: 2.0.0
 fileExistenceTests:
   - name: cloudflared
     path: /usr/local/bin/cloudflared
-    ShouldExist: true
+    shouldExist: true
   - name: entrypoint
     path: /usr/local/bin/entrypoint.sh
-    ShouldExist: true
+    shouldExist: true
   - name: healthcheck
     path: /usr/local/bin/healthcheck.sh
-    ShouldExist: true
+    shouldExist: true
