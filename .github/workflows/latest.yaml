@@ -87,6 +87,7 @@ jobs:
         id: build_publish
         uses: docker/build-push-action@v3
         with:
+          file: Containerfile
           context: .
           platforms: linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6
           push: true

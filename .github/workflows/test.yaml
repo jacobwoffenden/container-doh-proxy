@@ -16,6 +16,8 @@ jobs:
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v2.1.0
         id: hadolint
+        with:
+          dockerfile: Containerfile
 
   test-providers:
     runs-on: ubuntu-latest

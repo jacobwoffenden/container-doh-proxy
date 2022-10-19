@@ -3,7 +3,7 @@
 CLOUDFLARE_STATUS_EXPECTED_RESULT=$( dig cloudflarestatus.com +short )
 
 echo "Building Container"
-dockerBuild=$( docker build --tag doh-proxy . )
+dockerBuild=$( docker build --file Containerfile --tag doh-proxy . )
 
 # Testing providers that require no extra configuration
 for provider in $( jq -r 'keys[]' src/etc/doh-proxy/providers.json ); do

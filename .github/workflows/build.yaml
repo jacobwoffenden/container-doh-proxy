@@ -35,6 +35,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v3
         with:
+          file: Containerfile
           context: .
           platforms: linux/${{ matrix.platform }}
           load: true
@@ -45,10 +46,11 @@ jobs:
             BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
             BUILD_REVISION=${{ steps.prepare_build_args.outputs.build_revision }}
 
-      - name: Test cloudflared
-        id: test_cloudflared
-        run: |
-          docker run --rm --entrypoint /usr/local/bin/cloudflared doh-proxy:latest version
+      - name: Container Structure Test
+        id: container_structure_test
+        uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
+        with:
+          args: test --image doh-proxy:latest --config container-structure-test.yaml
 
       - name: Trivy Scan
         id: trivy_scan
