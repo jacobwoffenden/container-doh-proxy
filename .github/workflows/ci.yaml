@@ -1,0 +1,91 @@
+---
+name: "CI"
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ "amd64", "arm64", "386", "arm/v7", arm/v6 ]
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare Environment
+        id: prepare_environment
+        run: |
+          echo "build_created=$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )" >> $GITHUB_ENV
+          echo "build_revision=$( echo "${{ github.sha }}" )" >> $GITHUB_ENV
+          echo "build_version=$( echo "${{ github.sha }}" )" >> $GITHUB_ENV
+
+      - name: Set up Docker QEMU
+        id: setup_qemu
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        id: setup_buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Lint Containerfile
+        uses: hadolint/hadolint-action@v2.1.0
+        id: hadolint
+        with:
+          dockerfile: Containerfile
+
+      - name: Build Image
+        id: build_image
+        uses: docker/build-push-action@v3
+        with:
+          file: Containerfile
+          context: .
+          platforms: linux/${{ matrix.platform }}
+          load: true
+          tags: |
+            doh-proxy:${{ github.sha }}
+          build-args: |
+            BUILD_CREATED=${{ env.build_created }}
+            BUILD_REVISION=${{ env.build_revision }}
+            BUILD_VERSION=${{ env.build_version }}
+
+      - name: Container Structure Test
+        id: container_structure_test
+        uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
+        with:
+          args: test --image doh-proxy:${{ github.sha }} --config container-structure-test.yaml
+
+      - name: Trivy Scan
+        id: trivy_scan
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@0.7.1
+        with:
+          image-ref: doh-proxy:${{ github.sha }}
+          format: sarif
+          output: trivy-results.sarif
+
+      - name: Upload Trivy Scan SARIF report
+        id: upload_trivy_sarif
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: trivy-results.sarif
+
+  providers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Test Providers
+        id: test_providers
+        run: |
+          sudo apt install --yes dnsutils
+          bash -x scripts/provider-test.sh
+        env:
+          CLOUDFLARE_ZERO_TRUST_ID: ${{ secrets.CLOUDFLARE_ZERO_TRUST_ID }}
+          NEXTDNS_ID: ${{ secrets.NEXTDNS_ID }}
