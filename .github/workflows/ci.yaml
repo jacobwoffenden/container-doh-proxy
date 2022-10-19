@@ -85,7 +85,7 @@ jobs:
         id: test_providers
         run: |
           sudo apt install --yes dnsutils
-          bash -x scripts/provider-test.sh
+          bash scripts/provider-test.sh
         env:
           CLOUDFLARE_ZERO_TRUST_ID: ${{ secrets.CLOUDFLARE_ZERO_TRUST_ID }}
           NEXTDNS_ID: ${{ secrets.NEXTDNS_ID }}
