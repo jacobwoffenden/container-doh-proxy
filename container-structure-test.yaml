@@ -1,0 +1,12 @@
+schemaVersion: 2.0.0
+
+fileExistenceTests:
+  - name: cloudflared
+    path: /usr/local/bin/cloudflared
+    shouldExist: true
+  - name: entrypoint
+    path: /usr/local/bin/entrypoint.sh
+    shouldExist: true
+  - name: healthcheck
+    path: /usr/local/bin/healthcheck.sh
+    shouldExist: true
