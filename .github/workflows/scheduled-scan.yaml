@@ -15,7 +15,7 @@ jobs:
       - name: Trivy Scan
         id: trivy_scan
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.8.0
+        uses: aquasecurity/trivy-action@0.11.1
         with:
           image-ref: ghcr.io/jacobwoffenden/doh-proxy:latest
           format: sarif
