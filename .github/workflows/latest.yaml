@@ -1,15 +1,19 @@
 ---
-name: "Push Latest"
+name: Build and Push Latest
 
 on:
   push:
     branches:
-      - 'main'
+      - main
   schedule:
     - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions: read-all
 
 jobs:
   build-push-latest:
+    name: Build and Push Latest
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,107 +21,76 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        id: checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
-      - name: Prepare Build Arguments
-        id: prepare_build_args
+      - name: Prepare Environment
+        id: prepare_environment
         run: |
-          echo ::set-output name=build_created::$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )
-          echo ::set-output name=build_version::$( echo "latest" )
-          echo ::set-output name=build_revision::$( echo "${{ github.sha }}" )
-          echo ::set-output name=cloudflared_version::$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name' )
+          echo "build_created=$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )" >> ${GITHUB_ENV}
+          echo "build_version=latest" >> ${GITHUB_ENV}
+          echo "build_revision=$( echo "${{ github.sha }}" )" >> ${GITHUB_ENV}
+          echo "cloudflared_version=$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name' )" >> ${GITHUB_ENV}
 
-      - name: Install ORAS
+      - name: Install ORAS CLI
         id: install_oras
         run: |
           orasVersion=$( curl --silent https://api.github.com/repos/oras-project/oras/releases/latest | jq -r '.tag_name' | sed 's/v//' )
           curl -LO https://github.com/oras-project/oras/releases/download/v${orasVersion}/oras_${orasVersion}_linux_amd64.tar.gz
           tar -zxvf oras_${orasVersion}_linux_amd64.tar.gz
-          rm -f oras_${orasVersion}_linux_amd64.tar.gz
+          rm -f oras_${orasVersion}_linux_amd64.tar.gz LICENSE
 
-      - name: Install Cosign
+      - name: Install Sigstore Cosign
         id: install_cosign
-        uses: sigstore/cosign-installer@main
+        uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
 
-      - name: Set up QEMU
+      - name: Set up Docker QEMU
         id: setup_qemu
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # v2.2.0
 
       - name: Set up Docker Buildx
         id: setup_buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to Docker Hub
-        id: docker_hub_login
-        uses: docker/login-action@v2
-        with:
-          username: jacobwoffenden
-          password: ${{ secrets.DOCKER_HUB_PAT }}
+        uses: docker/setup-buildx-action@6a58db7e0d21ca03e6c44877909e80e45217eed2 # v2.6.0
 
       - name: Login to GitHub Container Registry
         id: ghcr_login
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Login to Red Hat Quay
-        id: quay_login
-        uses: docker/login-action@v2
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_IO_ROBOT_USERNAME }}
-          password: ${{ secrets.QUAY_IO_ROBOT_PASSWORD }}
 
       - name: Login to GitHub Container Registry (ORAS)
         id: oras_ghcr_login
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | oras login ghcr.io --username ${{ github.actor }} --password-stdin
 
-      - name: Publish Artifact Hub Manifest
-        id: publish_ah_manifest
-        run: |
-          oras push \
-            ghcr.io/jacobwoffenden/doh-proxy:artifacthub.io \
-            --config /dev/null:application/vnd.cncf.artifacthub.config.v1+yaml \
-            artifacthub-repo.yml:application/vnd.cncf.artifacthub.repository-metadata.layer.v1.yaml
-
-      - name: Build and Publish Containers to Registries
+      - name: Build and Publish Containers to GitHub Container Registry
         id: build_publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@44ea916f6c540f9302d50c2b1e5a8dc071f15cdf # v4.1.0
         with:
           file: Dockerfile
           context: .
           platforms: linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6
           push: true
           tags: |
-            docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-            ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-            quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-            ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}_cloudflared-${{ steps.prepare_build_args.outputs.cloudflared_version }}
+            ghcr.io/jacobwoffenden/doh-proxy:${{ env.build_version }}
           build-args: |
-            BUILD_CREATED=${{ steps.prepare_build_args.outputs.build_created }}
-            BUILD_VERSION=${{ steps.prepare_build_args.outputs.build_version }}
-            BUILD_REVISION=${{ steps.prepare_build_args.outputs.build_revision }}
-            CLOUDFLARED_VERSION=${{ steps.prepare_build_args.outputs.cloudflared_version }}
+            BUILD_CREATED=${{ env.build_created }}
+            BUILD_VERSION=${{ env.build_version }}
+            BUILD_REVISION=${{ env.build_revision }}
+            CLOUDFLARED_VERSION=${{ env.cloudflared_version }}
 
       - name: Sign Containers
         id: sign_containers
         run: |
-          cosign sign --recursive docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-          cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-          cosign sign --recursive quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-          cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}_cloudflared-${{ steps.prepare_build_args.outputs.cloudflared_version }}
+          cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ env.build_version }}
         env:
           COSIGN_EXPERIMENTAL: 1
           
       - name: Verify Containers
         id: verify_containers
         run: |
-          cosign verify docker.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-          cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-          cosign verify quay.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}
-          cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ steps.prepare_build_args.outputs.build_version }}_cloudflared-${{ steps.prepare_build_args.outputs.cloudflared_version }}
+          cosign verify ghcr.io/jacobwoffenden/doh-proxy:${{ env.build_version }}
         env:
           COSIGN_EXPERIMENTAL: 1

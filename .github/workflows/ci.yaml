@@ -4,12 +4,16 @@ name: CI
 on:
   pull_request:
     branches:
-      - 'main'
+      - main
+
+permissions: read-all
 
 jobs:
   lint-build-structure-scan:
     name: Lint, Build, Structure Test, and Scan
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     strategy:
       matrix:
         platform: [ "amd64", "arm64", "386", "arm/v7", arm/v6 ]
