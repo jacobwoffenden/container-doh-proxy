@@ -9,7 +9,7 @@ echo "Setting expected result"
 CLOUDFLARE_STATUS_EXPECTED_RESULT=$( dig cloudflarestatus.com +short )
 
 echo "Building container"
-dockerBuild=$( docker build --file Containerfile --tag doh-proxy . )
+dockerBuild=$( docker build --file Dockerfile --tag doh-proxy . )
 
 echo "# Test Report" >> ${GITHUB_STEP_SUMMARY}
 echo "| Provider | Result |" >> ${GITHUB_STEP_SUMMARY}

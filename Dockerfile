@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.17.0
+FROM docker.io/alpine:3.18.0
 
 ARG BUILD_CREATED
 ARG BUILD_VERSION
