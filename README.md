@@ -2,8 +2,7 @@
 
 > A multi-arch container to proxy DNS over HTTPS providers such as Cloudflare and Google
 
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/doh-proxy)](https://artifacthub.io/packages/search?repo=doh-proxy)
-
+[![GitHub Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/linter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 ## Usage
 
