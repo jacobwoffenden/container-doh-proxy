@@ -85,7 +85,7 @@ jobs:
 
       - name: Build and Publish Containers to Registries
         id: build_publish
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           file: Containerfile
           context: .
