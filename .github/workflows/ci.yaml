@@ -25,9 +25,9 @@ jobs:
       - name: Prepare Environment
         id: prepare_environment
         run: |
-          echo "build_created=$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )" >> ${GITHUB_ENV}
-          echo "build_revision=$( echo "${{ github.sha }}" )" >> ${GITHUB_ENV}
-          echo "build_version=$( echo "${{ github.sha }}" )" >> ${GITHUB_ENV}
+          echo "build_created=$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )" >> "${GITHUB_ENV}"
+          echo "build_revision=$( echo "${{ github.sha }}" )" >> "${GITHUB_ENV}"
+          echo "build_version=$( echo "${{ github.sha }}" )" >> "${GITHUB_ENV}"
 
       - name: Set up Docker QEMU
         id: setup_qemu
