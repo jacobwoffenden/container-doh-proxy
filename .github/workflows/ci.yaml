@@ -62,7 +62,7 @@ jobs:
         id: container_structure_test
         uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
         with:
-          args: test --image doh-proxy:${{ github.sha }} --config container-structure-test.yaml
+          args: test --image doh-proxy:${{ github.sha }} --config test/container-structure.yaml
 
       - name: Trivy Scan
         id: trivy_scan
