@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2059
+# shellcheck disable=SC2129
 
 if [[ -z "${GITHUB_ACTIONS}" ]]; then
   echo "Running locally"
