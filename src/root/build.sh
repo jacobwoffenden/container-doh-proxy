@@ -1,16 +1,16 @@
 #!/usr/bin/env sh
 
 # Set SYSTEM_ARCH
-SYSTEM_ARCH=$( uname -m )
+SYSTEM_ARCH="$( uname -m )"
 
 # Set CLOUDFLARED_ARCH and CLOUDFLARED_CHECKSUM
-if [[ "${SYSTEM_ARCH}" == "aarch64" ]]; then
+if [ "${SYSTEM_ARCH}" = "aarch64" ]; then
   CLOUDFLARED_ARCH="arm64"
-elif [[ "${SYSTEM_ARCH}" == "x86_64" ]]; then
+elif [ "${SYSTEM_ARCH}" = "x86_64" ]; then
   CLOUDFLARED_ARCH="amd64"
-elif [[ "${SYSTEM_ARCH}" == "i686" ]]; then
+elif [ "${SYSTEM_ARCH}" = "i686" ]; then
   CLOUDFLARED_ARCH="386"
-elif [[ "${SYSTEM_ARCH}" == "armv7l" ]]; then
+elif [ "${SYSTEM_ARCH}" = "armv7l" ]; then
   CLOUDFLARED_ARCH="arm"
 else
   echo "${SYSTEM_ARCH} not supported yet."
@@ -28,9 +28,11 @@ apk add --no-cache \
 
 # Download cloudflared release
 getCloudflaredLatest=$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r .tag_name )
-CLOUDFLARED_VERSION=${CLOUDFLARED_VERSION:-${getCloudflaredLatest}}
+export getCloudflaredLatest
+export CLOUDFLARED_VERSION="${CLOUDFLARED_VERSION:-${getCloudflaredLatest}}"
+
 curl \
-  --location https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-${CLOUDFLARED_ARCH} \
+  --location https://github.com/cloudflare/cloudflared/releases/download/"${CLOUDFLARED_VERSION}"/cloudflared-linux-"${CLOUDFLARED_ARCH}" \
   --output /usr/local/bin/cloudflared
 
 # Set executable permissions
