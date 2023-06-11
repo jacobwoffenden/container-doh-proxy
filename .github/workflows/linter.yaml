@@ -34,3 +34,4 @@
             DEFAULT_BRANCH: main
             VALIDATE_ALL_CODEBASE: false
             VALIDATE_JSCPD: false
+            GITHUB_ACTIONS_COMMAND_ARGS: -ignore "SC2116" -ignore "SC2129"
