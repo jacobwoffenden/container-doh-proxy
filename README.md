@@ -2,7 +2,7 @@
 
 > A multi-arch container to proxy DNS over HTTPS providers such as Cloudflare and Google
 
-[![GitHub Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/linter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![GitHub Super-Linter](https://github.com/jacobwoffenden/container-doh-proxy/actions/workflows/linter.yaml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 ## Usage
 
