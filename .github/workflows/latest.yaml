@@ -85,7 +85,7 @@ jobs:
       - name: Sign Containers
         id: sign_containers
         run: |
-          cosign sign --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ env.build_version }}
+          cosign sign --yes --recursive ghcr.io/jacobwoffenden/doh-proxy:${{ env.build_version }}
         env:
           COSIGN_EXPERIMENTAL: 1
           
