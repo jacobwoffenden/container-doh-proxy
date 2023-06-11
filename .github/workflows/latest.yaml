@@ -27,18 +27,19 @@ jobs:
       - name: Prepare Environment
         id: prepare_environment
         run: |
-          echo "build_created=$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )" >> ${GITHUB_ENV}
-          echo "build_version=latest" >> ${GITHUB_ENV}
-          echo "build_revision=$( echo "${{ github.sha }}" )" >> ${GITHUB_ENV}
-          echo "cloudflared_version=$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name' )" >> ${GITHUB_ENV}
+          echo "build_created=$( date --utc +"%Y-%m-%dT%H:%M:%SZ" )" >> "${GITHUB_ENV}"
+          echo "build_version=latest" >> "${GITHUB_ENV}"
+          echo "build_revision=$( echo "${{ github.sha }}" )" >> "${GITHUB_ENV}"
+          echo "cloudflared_version=$( curl --silent https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name' )" >> "${GITHUB_ENV}"
 
       - name: Install ORAS CLI
         id: install_oras
         run: |
           orasVersion=$( curl --silent https://api.github.com/repos/oras-project/oras/releases/latest | jq -r '.tag_name' | sed 's/v//' )
-          curl -LO https://github.com/oras-project/oras/releases/download/v${orasVersion}/oras_${orasVersion}_linux_amd64.tar.gz
-          tar -zxvf oras_${orasVersion}_linux_amd64.tar.gz
-          rm -f oras_${orasVersion}_linux_amd64.tar.gz LICENSE
+          export orasVersion
+          curl -LO https://github.com/oras-project/oras/releases/download/v"${orasVersion}"/oras_"${orasVersion}"_linux_amd64.tar.gz
+          tar -zxvf oras_"${orasVersion}"_linux_amd64.tar.gz
+          rm -f oras_"${orasVersion}"_linux_amd64.tar.gz LICENSE
 
       - name: Install Sigstore Cosign
         id: install_cosign

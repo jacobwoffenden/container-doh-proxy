@@ -22,7 +22,7 @@ docker run \
   --publish 53:53/udp \
   ghcr.io/jacobwoffenden/doh-proxy:latest
 ```
-
+<!-- markdownlint-disable-next-line MD034 -->
 #### With Metrics Exposed (http://IP:9100/metrics)
 
 ```bash

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2059
 
 if [[ -z "${GITHUB_ACTIONS}" ]]; then
   echo "Running locally"
@@ -6,7 +7,8 @@ if [[ -z "${GITHUB_ACTIONS}" ]]; then
 fi
 
 echo "Setting expected result"
-export CLOUDFLARE_STATUS_EXPECTED_RESULT=$( dig cloudflarestatus.com +short )
+CLOUDFLARE_STATUS_EXPECTED_RESULT=$( dig cloudflarestatus.com +short )
+export CLOUDFLARE_STATUS_EXPECTED_RESULT
 
 echo "Building container"
 docker build \
